@@ -5,7 +5,7 @@ import {USER_RESPONSE_MESSAGE} from "../constants/user-response-message";
 import {ResponseMessage} from "../models/ResponseMessage";
 import {UserToken} from "../interfaces/UserToken";
 
-export const loggedAdmin =
+export const adminLogged =
   async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization?.split(" ")[1];
     if (token) {
