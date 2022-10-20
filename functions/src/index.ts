@@ -4,6 +4,7 @@ import * as session from "express-session";
 import admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import * as firebase from "firebase/app";
+import FieldController from "./controllers/FieldController";
 import SchedulingController from "./controllers/SchedulingController";
 import UserController from "./controllers/UserController";
 import { adminLogged } from "./middlewares/admin-logged";
@@ -21,22 +22,29 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 admin.initializeApp(functions.config().firebase);
 
+const panelApp = express();
 
-const app = express();
+panelApp.use(cors({ origin: true }));
 
-app.use(cors({ origin: true }));
-app.use(session({
+panelApp.post("/signin", UserController.signIn);
+panelApp.get("/users", adminLogged, UserController.fetch);
+panelApp.put("/users/:uid/promote", adminLogged, UserController.promote);
+panelApp.put("/users/:uid/demote", adminLogged, UserController.demote);
+
+panelApp.post('/field', adminLogged, FieldController.create);
+
+export const panel = functions.https.onRequest(panelApp);
+
+const schedulingApp = express();
+
+schedulingApp.use(cors({ origin: true }));
+schedulingApp.use(session({
   secret: process.env.SESSION_SECRET as string,
   saveUninitialized: true,
   resave: true,
 }));
 
-app.post("/signin", UserController.signIn);
+schedulingApp.get('/', SchedulingController.fetch);
+schedulingApp.post('/', userLogged, SchedulingController.schedule);
 
-app.get("/users", adminLogged, UserController.fetch);
-app.put("/users/:uid/promote", adminLogged, UserController.promote);
-app.put("/users/:uid/demote", adminLogged, UserController.demote);
-
-app.post('/scheduling', userLogged, SchedulingController.schedule);
-
-export const panel = functions.https.onRequest(app);
+export const scheduling = functions.https.onRequest(schedulingApp);
