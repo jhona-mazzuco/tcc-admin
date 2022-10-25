@@ -49,7 +49,6 @@ class UserController {
     }
   }
 
-
   async sendEmailPasswordReset(request: Request, response: Response) {
     const {email} = request.body;
     try {
