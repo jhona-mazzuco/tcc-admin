@@ -49,6 +49,19 @@ class UserController {
     }
   }
 
+
+  async sendEmailPasswordReset(request: Request, response: Response) {
+    const {email} = request.body;
+    try {
+      await admin
+          .auth()
+          .generatePasswordResetLink(email);
+      response.json(new ResponseMessage('E-mail enviado com sucesso!'));
+    } catch (e) {
+      response.status(500).send(new ResponseError());
+    }
+  }
+
   promote(req: Request, res: Response): void {
     const {uid} = req.params;
     admin
