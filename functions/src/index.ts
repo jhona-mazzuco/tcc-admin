@@ -28,10 +28,10 @@ panelApp.use(cors({ origin: true }));
 
 panelApp.post("/signin", UserController.signIn);
 panelApp.post(
-  "/users/recovery",
-  adminLogged,
+  "/recovery",
   UserController.sendEmailPasswordReset
 );
+
 panelApp.get("/users", adminLogged, UserController.fetch);
 panelApp.put("/users/:uid/promote", adminLogged, UserController.promote);
 panelApp.put("/users/:uid/demote", adminLogged, UserController.demote);
