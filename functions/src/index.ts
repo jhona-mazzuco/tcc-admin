@@ -39,7 +39,6 @@ panelApp.put("/users/:uid/demote", adminLogged, UserController.demote);
 panelApp.post('/field', adminLogged, FieldController.create);
 panelApp.put('/field/:id', adminLogged, FieldController.update);
 panelApp.delete('/field/:id', adminLogged, FieldController.delete);
-panelApp.delete('/field/:id/image', adminLogged, FieldController.deleteImage);
 panelApp.get('/field', adminLogged, FieldController.findAll);
 panelApp.get('/field/:id', adminLogged, FieldController.findById);
 

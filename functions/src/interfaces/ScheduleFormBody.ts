@@ -1,4 +1,4 @@
-import { MeatTypes } from "../MeatTypes";
+import { MeatTypes } from "../types/MeatTypes";
 
 export interface ScheduleFormBody {
   fieldId: string;
