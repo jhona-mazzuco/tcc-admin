@@ -1,4 +1,4 @@
-import { MeatTypes } from "../types/MeatTypes";
+import { FoodTypes } from "../types/FoodTypes";
 
 export interface ScheduleFormBody {
   fieldId: string;
@@ -9,6 +9,6 @@ export interface ScheduleFormBody {
 
 interface FoodForm {
   peopleNumber: number;
-  salad: boolean;
-  meatTypes: MeatTypes[];
+  foodTypes: FoodTypes[];
+  obs: string;
 }

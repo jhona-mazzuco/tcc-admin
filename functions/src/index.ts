@@ -1,14 +1,9 @@
-import * as cors from "cors";
-import * as express from "express";
-import * as session from "express-session";
 import admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import * as firebase from "firebase/app";
-import FieldController from "./controllers/FieldController";
-import SchedulingController from "./controllers/SchedulingController";
-import UserController from "./controllers/UserController";
-import { adminLogged } from "./middlewares/admin-logged";
-import { userLogged } from "./middlewares/user-logged";
+import fieldRoutes from "./routes/field-routes";
+import panelRoutes from "./routes/panel-routes";
+import schedulingRoutes from "./routes/scheduling-routes";
 
 const firebaseConfig = {
   apiKey: process.env.API_KEY,
@@ -22,38 +17,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 admin.initializeApp(functions.config().firebase);
 
-const panelApp = express();
-
-panelApp.use(cors({ origin: true }));
-
-panelApp.post("/signin", UserController.signIn);
-panelApp.post(
-  "/recovery",
-  UserController.sendEmailPasswordReset
-);
-
-panelApp.get("/users", adminLogged, UserController.fetch);
-panelApp.put("/users/:uid/promote", adminLogged, UserController.promote);
-panelApp.put("/users/:uid/demote", adminLogged, UserController.demote);
-
-panelApp.post('/field', adminLogged, FieldController.create);
-panelApp.put('/field/:id', adminLogged, FieldController.update);
-panelApp.delete('/field/:id', adminLogged, FieldController.delete);
-panelApp.get('/field', adminLogged, FieldController.findAll);
-panelApp.get('/field/:id', adminLogged, FieldController.findById);
-
-export const panel = functions.https.onRequest(panelApp);
-
-const schedulingApp = express();
-
-schedulingApp.use(cors({ origin: true }));
-schedulingApp.use(session({
-  secret: process.env.SESSION_SECRET as string,
-  saveUninitialized: true,
-  resave: true,
-}));
-
-schedulingApp.get('/', SchedulingController.fetch);
-schedulingApp.post('/', userLogged, SchedulingController.schedule);
-
-export const scheduling = functions.https.onRequest(schedulingApp);
+export const panel = functions.https.onRequest(panelRoutes);
+export const scheduling = functions.https.onRequest(schedulingRoutes);
+export const field = functions.https.onRequest(fieldRoutes);
