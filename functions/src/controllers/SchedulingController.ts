@@ -4,7 +4,8 @@ import * as moment from "moment";
 import { COLLECTION_PATHS } from "../constants/collection-paths";
 import { DAY_OF_WEEK } from "../constants/day-of-week";
 import { SCHEDULE_STATES } from "../constants/schedule-states";
-import { SCHEDULING_RESPONSE_MESSAGE } from "../constants/scheduling-response-message";
+import { SCHEDULING_RESPONSE_MESSAGE }
+  from "../constants/scheduling-response-message";
 import { ScheduleFormBody } from "../interfaces/ScheduleFormBody";
 import { FieldConfiguration } from "../models/FieldConfiguration";
 import { ResponseError } from "../models/ResponseError";
@@ -141,7 +142,7 @@ class SchedulingController {
 
       const fieldCollection = await firestore()
         .collection(COLLECTION_PATHS.FIELDS)
-        .get();
+        .get()!;
 
       const configCollection = await firestore()
         .collection(COLLECTION_PATHS.FIELD_CONFIG);
@@ -150,9 +151,10 @@ class SchedulingController {
       for (const schedule of scheduleCollection.docs) {
         const { date, hour, fieldId } = schedule.data();
 
-        const { name } = fieldCollection.docs
+        const { name } = fieldCollection
+          .docs
           .find((row) => row.id === fieldId)!
-          .data();
+          .data()!;
 
         const configDocs = await configCollection
           .where('fieldId', '==', fieldId)

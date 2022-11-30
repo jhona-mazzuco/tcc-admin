@@ -21,7 +21,7 @@ class DashboardController {
         .collection(COLLECTION_PATHS.FIELD_CONFIG);
 
       const foodCollection = firestore()
-        .collection(COLLECTION_PATHS.FOOD);
+        .collection(COLLECTION_PATHS.FOOD)!;
 
       const response = [];
       for (const doc of schedulesCollection.docs) {
@@ -29,7 +29,8 @@ class DashboardController {
 
         const { name } = fieldCollection
           .docs
-          .find(({ id }) => id == fieldId)!.data();
+          .find(({ id }) => id == fieldId)!
+          .data()!;
 
         const configQuery = await configCollection
           .where('fieldId', '==', fieldId)
@@ -86,16 +87,16 @@ class DashboardController {
         .collection(COLLECTION_PATHS.SCHEDULES)
         .listDocuments();
 
-      const schedule = schedules.find(({ id }) => id === req.params.id);
+      const schedule = schedules.find(({ id }) => id === req.params.id)!;
 
       const foodQuery = await firestore()
         .collection(COLLECTION_PATHS.FOOD)
-        .where('schedulingId', '==', schedule!.id)
+        .where('schedulingId', '==', schedule.id)
         .get();
 
       await foodQuery.docs[0].ref.delete();
 
-      await schedule!.delete();
+      await schedule.delete();
 
       res.send(new ResponseMessage('Horário excluído com sucesso!'));
     } catch (e) {

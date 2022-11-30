@@ -18,7 +18,10 @@ class UserController {
           email,
           password
         );
-      const { customClaims } = await admin.auth().getUser(authenticated.user.uid);
+      const { customClaims } = await admin
+        .auth()
+        .getUser(authenticated.user.uid);
+
       if (customClaims?.admin) {
         const token = sign(
           { uid: authenticated.user.uid },
